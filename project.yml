@@ -4,6 +4,8 @@ options:
   deploymentTarget:
     iOS: "15.0"
   createIntermediateGroups: true
+  xcodeVersion: "15.0"
+  objectVersion: 60
 
 targets:
   WxCodeCatcher:
