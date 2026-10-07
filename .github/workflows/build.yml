@@ -12,10 +12,21 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install XcodeGen
-        run: brew install xcodegen
+        run: |
+          brew uninstall xcodegen 2>/dev/null || true
+          brew install xcodegen@2.42.0 2>/dev/null || brew install xcodegen
+
+      - name: Select Xcode 15
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app 2>/dev/null || sudo xcode-select -s /Applications/Xcode.app
 
       - name: Generate Xcode project
-        run: xcodegen generate
+        run: |
+          xcodegen --version
+          xcodegen generate --use-cache
+          # 兜底: 强制把 project format 降到 Xcode 15 可读
+          PBX=$(find . -name project.pbxproj | head -1)
+          echo "pbxproj: $PBX"
+          grep -m1 objectVersion "$PBX" || true
 
       - name: Build (unsigned archive)
         run: |
